@@ -98,6 +98,7 @@ def main():
                 user = scrape_profile(profile_id)
             except Exception as e:
                 st.error('Invalid Profile URL. Please, try again.')
+                st.error(f'Exception: {e}')
 
         job_posting = scrape_job_posting(url)
 
