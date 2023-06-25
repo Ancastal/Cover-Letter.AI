@@ -95,7 +95,8 @@ def main():
             try:
                 api = Linkedin('ancastal@outlook.it', 'Respublica96.')
             except Exception as e:
-                st.error('Automatic profile scraping is not available on cloud. Click on the checkbox to customize your profile or use the local version of the app.')
+                st.error('Automatic profile scraping is not available on cloud.')
+                st.error('Please, use the local version of the app instead.')
             profile_id = user_profile.split('/')[-2]
             user = scrape_profile(profile_id)
 
