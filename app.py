@@ -11,7 +11,6 @@ try:
     from linkedin_api import Linkedin
 except ModuleNotFoundError as e:
     subprocess.Popen([f'{sys.executable} -m pip install git+https://github.com/tomquirk/linkedin-api.git'], shell=True)
-  # wait for subprocess to install package before running your actual code below
     time.sleep(90)
 
 
