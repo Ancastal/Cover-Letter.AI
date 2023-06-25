@@ -42,6 +42,7 @@ def main():
     st.title('Cover Letter Generator :page_with_curl:')
     st.write('This app generates a cover letter based on your information and a job posting.')
     st.caption('Currently, this app only supports LinkedIn job postings, e.g. https://www.linkedin.com/jobs/view/3544765357/')
+    st.caption('User profile parsing is not available in this Cloud version of the app. Please, use the local version instead.')
     st.write('---')
 
 
