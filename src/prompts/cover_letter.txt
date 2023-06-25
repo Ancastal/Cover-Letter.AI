@@ -1,0 +1,11 @@
+
+Write a cover letter for a job posting for a {job_title} position at {company_name} in {company_location}.
+The job description is: {job_description}. The salary information is: {salary_information}.
+
+Your name is {name}. Your education is {education}. Your experience is {experience}.
+Your skills are {skills}. My certifications are {certifications}.
+
+You are tasked with writing a cover letter for this job posting.
+Do not include any information that I have not provided.
+
+Cover Letter:
