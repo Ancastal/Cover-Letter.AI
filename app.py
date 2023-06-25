@@ -17,9 +17,16 @@ except ModuleNotFoundError as e:
 st.set_page_config(page_title='Cover Letter Generator', page_icon=':page_with_curl:')
 
 def scrape_profile(profile_id):
-    email = os.getenv('LINKEDIN_EMAIL')
-    pwd = os.getenv('LINKEDIN_PASSWORD')
-    api = Linkedin(email, pwd)
+    email = st.secrets['LINKEDIN_EMAIL']
+    pwd = st.secrets['LINKEDIN_PASSWORD']
+
+    try:
+        api = Linkedin(email, pwd)
+    except Exception as e:
+        email = os.getenv('LINKEDIN_EMAIL')
+        pwd = os.getenv('LINKEDIN_PASSWORD')
+        api = Linkedin(email, pwd)
+
     profile = api.get_profile(profile_id)
 
     name = profile['firstName'] + ' ' + profile['lastName']
@@ -41,7 +48,7 @@ def main():
     st.title('Cover Letter Generator :page_with_curl:')
     st.write('This app generates a cover letter based on your information and a job posting.')
     st.caption('Currently, this app only supports LinkedIn job postings, e.g. https://www.linkedin.com/jobs/view/3544765357/')
-    st.caption('User profile parsing is not available in this Cloud version of the app. Please, use the local version instead.')
+    st.caption('User profile automation is not available in this Cloud version of the app. Please, use the local version instead.')
     st.write('---')
 
 
@@ -85,9 +92,12 @@ def main():
         if customize_profile:
             user = user_persona.UserPersona(name, education, experience, skills, certifications)
         else:
-            api = Linkedin('ancastal@outlook.it', 'Respublica96.')
-            profile_id = user_profile.split('/')[-2]
-            user = scrape_profile(profile_id)
+            try:
+                api = Linkedin('ancastal@outlook.it', 'Respublica96.')
+                profile_id = user_profile.split('/')[-2]
+                user = scrape_profile(profile_id)
+            except Exception as e:
+                st.error('Invalid Profile URL. Please, try again.')
 
         job_posting = scrape_job_posting(url)
 
