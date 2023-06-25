@@ -92,13 +92,10 @@ def main():
         if customize_profile:
             user = user_persona.UserPersona(name, education, experience, skills, certifications)
         else:
-            try:
-                api = Linkedin('ancastal@outlook.it', 'Respublica96.')
-                profile_id = user_profile.split('/')[-2]
-                user = scrape_profile(profile_id)
-            except Exception as e:
-                st.error('Invalid Profile URL. Please, try again.')
-                st.error(f'Exception: {e}')
+            api = Linkedin('ancastal@outlook.it', 'Respublica96.')
+            profile_id = user_profile.split('/')[-2]
+            user = scrape_profile(profile_id)
+
 
         job_posting = scrape_job_posting(url)
 
