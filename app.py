@@ -1,8 +1,18 @@
 """An application to generate cover letters based on user information and job postings."""
 import streamlit as st
 from src.cover_letter import scrape_job_posting, query, user_persona
-from linkedin_api import Linkedin
+import subprocess
+import sys
 import os
+import time
+
+
+try:
+    from linkedin_api import Linkedin
+except ModuleNotFoundError as e:
+    subprocess.Popen([f'{sys.executable} -m pip install git+https://github.com/tomquirk/linkedin-api.git'], shell=True)
+  # wait for subprocess to install package before running your actual code below
+    time.sleep(90)
 
 
 st.set_page_config(page_title='Cover Letter Generator', page_icon=':page_with_curl:')
