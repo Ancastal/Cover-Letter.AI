@@ -4,6 +4,3 @@ langchain
 nltk
 bs4
 requests
-seleniumbase
-webdriver-manager
-fake-useragent
