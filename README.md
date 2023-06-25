@@ -70,6 +70,3 @@ Contributions are welcome! If you encounter any issues or have suggestions for i
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-```
-
-Feel free to copy and use this formatted output for your README.md file.
