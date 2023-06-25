@@ -6,6 +6,9 @@ The Cover Letter Generator is a web application that helps you generate cover le
 **Note:**
 The application has an additional feature to scrape the user profile URL and gather user information automatically. However, this feature is only available when running the application locally and is not available in the Cloud implementation provided as a demo.
 
+**Demo:**
+- https://coverletter-generation.streamlit.app/
+
 ## Features
 
 - Scrape job posting details from a URL, including job title, company name, location, job description, and salary information.
