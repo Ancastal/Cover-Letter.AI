@@ -117,6 +117,21 @@ def main():
     load_css()
     # Main content
     st.title('Cover Letter Generator :page_with_curl:')
+    
+    badge_html = f"""
+    <span style="
+        display: inline-block;
+        background-color: #ECF9EC;
+        color: #1B7F1B;
+        border: 1px solid #1B7F1B;
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 0.85em;">
+    v{open('VERSION').read()}
+    </span>
+    """
+    
+    st.markdown(badge_html, unsafe_allow_html=True)
     st.write('Generate personalized cover letters based on your profile and job postings.')
     st.markdown("""
             <div class="card pt-serif">
