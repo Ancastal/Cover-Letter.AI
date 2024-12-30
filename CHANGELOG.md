@@ -1,5 +1,14 @@
 ## [Unreleased]
 
+## [1.2.2] - 2024-01-04
+### Changed
+- Improved UI by hiding the Editor tab until a cover letter is generated
+
+### Fixed
+- Fixed IndexError when accessing editor tab before cover letter generation
+- Fixed Editor tab not displaying after cover letter generation
+- Fixed cover letter and success message not displaying after generation
+
 ## [1.2.1] - 2024-01-03
 ### Fixed
 - Added missing app.py and cover_letter_editor.py files to the release

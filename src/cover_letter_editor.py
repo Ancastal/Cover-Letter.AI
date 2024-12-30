@@ -10,7 +10,8 @@ class CoverLetterEditor:
             "Professional": "Write in a formal and professional tone",
             "Friendly": "Write in a warm and approachable tone",
             "Confident": "Write in a strong and assertive tone",
-            "Enthusiastic": "Write in an energetic and passionate tone"
+            "Enthusiastic": "Write in an energetic and passionate tone",
+            "Funny": "Write in a funny and engaging tone"
         }
         self.style_options = {
             "Traditional": "Use classic cover letter formatting and language",
@@ -69,6 +70,7 @@ class CoverLetterEditor:
         return original_text
         
     def edit_cover_letter(self, original_text, tone, style, emphasis_skills, length_preference):
+        print(tone, style, emphasis_skills, length_preference)
         prompt_template = """
         Please rewrite the following cover letter:
         {original_text}
@@ -84,20 +86,19 @@ class CoverLetterEditor:
         """
         
         length_descriptions = {
-            1: "Make it very concise and to the point",
-            2: "Keep it relatively brief",
-            3: "Maintain a moderate length",
-            4: "Include more detail and examples",
-            5: "Provide comprehensive detail and examples"
+            1: "Make it very concise and to the point. Focus only on the most crucial information.",
+            2: "Keep it relatively brief. Cover essential points.",
+            3: "Maintain a moderate length. Balance key details.",
+            4: "Include more detail and examples.",
+            5: "Provide comprehensive detail and examples."
         }
         
         prompt = PromptTemplate(
             template=prompt_template,
             input_variables=["original_text", "tone_description", "style_description", "emphasis_skills", "length_description"]
         )
-        
         chain = LLMChain(llm=self.llm, prompt=prompt)
-        
+        print(length_descriptions[length_preference])
         response = chain.run({
             "original_text": original_text,
             "tone_description": self.tone_options[tone],
