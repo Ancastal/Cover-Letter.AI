@@ -1,6 +1,6 @@
 # Cover Letter Generator
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](VERSION)
+[![Version](https://img.shields.io/badge/version-1.2.2-blue.svg)](VERSION)
 
 The Cover Letter Generator is an AI-powered web application that helps you create professional, personalized cover letters for job applications. It leverages web scraping technology to extract job posting details automatically and combines them with your professional background to generate tailored cover letters using advanced language models.
 
