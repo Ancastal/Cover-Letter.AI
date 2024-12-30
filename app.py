@@ -10,6 +10,9 @@ import re
 import json
 import toml
 from pathlib import Path
+import warnings
+
+warnings.filterwarnings("ignore")
 
 try:
     from linkedin_api import Linkedin
@@ -31,6 +34,12 @@ def load_secrets():
     except:
         return {}
 
+# Custom CSS
+def load_css():
+    """Load and apply custom CSS styles"""
+    with open("static/styles.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+        
 # Page configuration
 st.set_page_config(
     page_title='Cover Letter Generator',
@@ -39,49 +48,7 @@ st.set_page_config(
     initial_sidebar_state='expanded'
 )
 
-# Custom CSS
-st.markdown("""
-    <style>
-    .stButton>button {
-        width: 100%;
-        margin-top: 20px;
-        border-radius: 8px;
-    }
-    .main .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-        max-width: 800px;
-    }
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 2rem;
-    }
-    .stTabs [data-baseweb="tab"] {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    .cover-letter-container {
-        background-color: #f8f9fa;
-        padding: 2rem;
-        border-radius: 10px;
-        border: 1px solid #e9ecef;
-        margin: 2rem 0;
-        font-family: 'Times New Roman', serif;
-        line-height: 1.6;
-    }
-    .success-message {
-        padding: 1rem;
-        border-radius: 8px;
-        background-color: #d4edda;
-        color: #155724;
-        margin-bottom: 1rem;
-        text-align: center;
-    }
-    .download-button {
-        text-align: center;
-        margin-top: 1rem;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+
 
 def validate_linkedin_url(url, type="job"):
     """Validate LinkedIn URL format."""
@@ -147,13 +114,26 @@ def main():
         st.markdown("---")
         st.caption("Made with ❤️ using Streamlit")
 
+    load_css()
     # Main content
     st.title('Cover Letter Generator :page_with_curl:')
     st.write('Generate personalized cover letters based on your profile and job postings.')
-
+    st.markdown("""
+            <div class="card pt-serif">
+                <p><strong>Hi, I'm Antonio. 👋</strong></p>
+                <p>I'm a PhD candidate in Artificial Intelligence at the University of Pisa, working on Creative Machine Translation with LLMs.</p>
+                <p>My goal is to develop translation systems that can preserve style, tone, and creative elements while accurately conveying meaning across languages.</p>
+                <p>Learn more about me at <a href="https://www.ancastal.com" target="_blank">www.ancastal.com</a></p>
+            </div>
+    """, unsafe_allow_html=True)
     # Create tabs for different input methods
-    tab1, tab2, tab3, tab4 = st.tabs(["🔗 LinkedIn Integration", "✍️ Manual Input", "⚙️ Settings", "📝 Editor"])
-
+    tabs = ["🔗 LinkedIn Integration", "✍️ Manual Input", "⚙️ Settings"]
+    if 'cover_letter' in st.session_state and st.session_state.cover_letter is not None:
+        tabs.append("📝 Editor")
+    
+    all_tabs = st.tabs(tabs)
+    tab1, tab2, tab3, *editor_tab = all_tabs
+    
     # Initialize session state for storing the generated cover letter
     if 'cover_letter' not in st.session_state:
         st.session_state.cover_letter = None
@@ -172,6 +152,23 @@ def main():
         profile_url = st.text_input('Your LinkedIn Profile URL', key='profile_url', placeholder='https://www.linkedin.com/in/johndoe/')
         if profile_url and not validate_linkedin_url(profile_url, "profile"):
             st.error("Please enter a valid LinkedIn profile URL")
+            
+        # Display generated content if available
+        if 'cover_letter' in st.session_state and st.session_state.cover_letter is not None:
+            st.markdown('<div class="success-message">✨ Your cover letter is ready!</div>', unsafe_allow_html=True)
+            st.markdown("""<div class="cover-letter-container">
+                        <p>{}</p>
+                        </div>""".format(st.session_state.cover_letter['text']), unsafe_allow_html=True)
+            
+            st.markdown('<div class="download-button">', unsafe_allow_html=True)
+            st.download_button(
+                label="📥 Download Cover Letter",
+                data=st.session_state.cover_letter['text'],
+                file_name="cover_letter.txt",
+                mime="text/plain",
+                key='download_button2'
+            )
+            st.markdown('</div>', unsafe_allow_html=True)
 
     with tab2:
         col1, col2 = st.columns(2)
@@ -199,6 +196,22 @@ def main():
         certifications = st.multiselect('Certifications',
             ['AWS', 'Google Cloud', 'Azure', 'Cisco', 'CompTIA', 'PMP', 'CISSP'],
             help="Select any relevant certifications")
+            
+        # Display generated content if available
+        if 'cover_letter' in st.session_state and st.session_state.cover_letter is not None:
+            st.markdown('<div class="success-message">✨ Your cover letter is ready!</div>', unsafe_allow_html=True)
+            st.markdown("""<div class="cover-letter-container">
+                        <p>{}</p>
+                        </div>""".format(st.session_state.cover_letter['text']), unsafe_allow_html=True)
+            
+            st.markdown('<div class="download-button">', unsafe_allow_html=True)
+            st.download_button(
+                label="📥 Download Cover Letter",
+                data=st.session_state.cover_letter['text'],
+                file_name="cover_letter.txt",
+                mime="text/plain"
+            )
+            st.markdown('</div>', unsafe_allow_html=True)
 
     with tab3:
         st.info("Configure your application secrets here.")
@@ -229,30 +242,33 @@ def main():
             except Exception as e:
                 st.error(f"Failed to save settings: {str(e)}")
 
-    with tab4:
-        if st.session_state.cover_letter is not None:
-            editor = CoverLetterEditor()
-            edited_text = editor.create_editing_interface(st.session_state.cover_letter['text'])
-            
-            if edited_text != st.session_state.cover_letter['text']:
-                st.session_state.cover_letter['text'] = edited_text
-                st.markdown('<div class="success-message">✨ Cover letter updated successfully!</div>', unsafe_allow_html=True)
+    # Only show editor tab if it exists
+    if editor_tab:  # This checks if the list is not empty
+        with editor_tab[0]:
+            if st.session_state.cover_letter is not None:
+                editor = CoverLetterEditor()
+                edited_text = editor.create_editing_interface(st.session_state.cover_letter['text'])
                 
-            st.markdown("""<div class="cover-letter-container">
-                        <p>{}</p>
-                        </div>""".format(edited_text), unsafe_allow_html=True)
-            
-            # Add download button with centered styling
-            st.markdown('<div class="download-button">', unsafe_allow_html=True)
-            st.download_button(
-                label="📥 Download Cover Letter",
-                data=edited_text,
-                file_name="cover_letter.txt",
-                mime="text/plain"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
-        else:
-            st.info("Generate a cover letter first to use the editor.")
+                if edited_text != st.session_state.cover_letter['text']:
+                    st.session_state.cover_letter['text'] = edited_text
+                    st.markdown('<div class="success-message">✨ Cover letter updated successfully!</div>', unsafe_allow_html=True)
+                    
+                st.markdown("""<div class="cover-letter-container">
+                            <p>{}</p>
+                            </div>""".format(edited_text), unsafe_allow_html=True)
+                
+                # Add download button with centered styling
+                st.markdown('<div class="download-button">', unsafe_allow_html=True)
+                st.download_button(
+                    label="📥 Download Cover Letter",
+                    data=edited_text,
+                    file_name="cover_letter.txt",
+                    mime="text/plain",
+                    key='download_button0'
+                )
+                st.markdown('</div>', unsafe_allow_html=True)
+            else:
+                st.info("Generate a cover letter first to use the editor.")
 
     # Generate button
     if st.button('Generate Cover Letter', type='primary'):
@@ -283,19 +299,25 @@ def main():
                 st.session_state.cover_letter = response
                 st.session_state.editor_active = True
 
-                # Display result in a nice format
-                st.markdown('<div class="success-message">✨ Cover letter generated successfully!</div>', unsafe_allow_html=True)
+                # Display success message and cover letter in the active tab
+                st.markdown('<div class="success-message">✨ Your cover letter is ready!</div>', unsafe_allow_html=True)
                 st.markdown("""<div class="cover-letter-container">
                             <p>{}</p>
                             </div>""".format(response['text']), unsafe_allow_html=True)
                 
                 # Add download button with centered styling
+                st.markdown('<div class="download-button">', unsafe_allow_html=True)
                 st.download_button(
                     label="📥 Download Cover Letter",
                     data=response['text'],
                     file_name="cover_letter.txt",
-                    mime="text/plain"
+                    mime="text/plain",
+                    key='download_button1'
                 )
+                st.markdown('</div>', unsafe_allow_html=True)
+
+                # Rerun to update the tabs structure
+                time.sleep(0.5)  # Small delay to ensure UI updates
                 st.rerun()
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")

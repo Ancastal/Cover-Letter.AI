@@ -94,7 +94,7 @@ def create_session_with_retries():
     # Configure retry strategy
     retries = Retry(
         total=5,  # number of retries
-        backoff_factor=1,  # wait 1, 2, 4, 8, 16 seconds between retries
+        backoff_factor=2,  # wait 1, 2, 4, 8, 16 seconds between retries
         status_forcelist=[429, 500, 502, 503, 504]  # retry on these status codes
     )
     
