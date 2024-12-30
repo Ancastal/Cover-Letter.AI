@@ -1,4 +1,17 @@
 ## [Unreleased]
+
+## [1.2.0] - 2024-01-03
+### Added
+- New cover letter editor interface with customization options
+- Tone selection (Professional, Friendly, Confident, Enthusiastic)
+- Style selection (Traditional, Modern, Creative, Concise)
+- Skills emphasis customization
+- Length preference control
+- Real-time preview of edited cover letters
+- New Settings tab for managing application secrets
+- Interface for configuring LinkedIn credentials
+- Secure storage of credentials in .streamlit/secrets.toml
+
 ### Changed
 - Enhanced README.md with version shield, improved documentation, and better formatting
 
