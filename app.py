@@ -1,17 +1,35 @@
 """An application to generate cover letters based on user information and job postings."""
 import streamlit as st
 from src.cover_letter import scrape_job_posting, query, user_persona
+from src.cover_letter_editor import CoverLetterEditor
 import subprocess
 import sys
 import os
 import time
 import re
+import json
+import toml
+from pathlib import Path
 
 try:
     from linkedin_api import Linkedin
 except ModuleNotFoundError as e:
     subprocess.Popen([f'{sys.executable} -m pip install git+https://github.com/tomquirk/linkedin-api.git'], shell=True)
     time.sleep(90)
+
+def save_secrets(secrets):
+    """Save secrets to .streamlit/secrets.toml file."""
+    secrets_path = Path('.streamlit/secrets.toml')
+    secrets_path.parent.mkdir(exist_ok=True)
+    with open(secrets_path, 'w') as f:
+        toml.dump(secrets, f)
+
+def load_secrets():
+    """Load secrets from .streamlit/secrets.toml file."""
+    try:
+        return dict(st.secrets)
+    except:
+        return {}
 
 # Page configuration
 st.set_page_config(
@@ -134,7 +152,13 @@ def main():
     st.write('Generate personalized cover letters based on your profile and job postings.')
 
     # Create tabs for different input methods
-    tab1, tab2 = st.tabs(["🔗 LinkedIn Integration", "✍️ Manual Input"])
+    tab1, tab2, tab3, tab4 = st.tabs(["🔗 LinkedIn Integration", "✍️ Manual Input", "⚙️ Settings", "📝 Editor"])
+
+    # Initialize session state for storing the generated cover letter
+    if 'cover_letter' not in st.session_state:
+        st.session_state.cover_letter = None
+    if 'editor_active' not in st.session_state:
+        st.session_state.editor_active = False
 
     with tab1:
         st.info("Currently, only LinkedIn job postings are supported (e.g., https://www.linkedin.com/jobs/view/3544765357/)")
@@ -176,6 +200,60 @@ def main():
             ['AWS', 'Google Cloud', 'Azure', 'Cisco', 'CompTIA', 'PMP', 'CISSP'],
             help="Select any relevant certifications")
 
+    with tab3:
+        st.info("Configure your application secrets here.")
+        
+        # Load current secrets
+        current_secrets = load_secrets()
+        
+        # LinkedIn credentials section
+        linkedin_email = st.text_input(
+            "LinkedIn Email",
+            value=current_secrets.get('LINKEDIN_EMAIL', ''),
+            type='default'
+        )
+        linkedin_password = st.text_input(
+            "LinkedIn Password",
+            value=current_secrets.get('LINKEDIN_PASSWORD', ''),
+            type='password'
+        )
+        
+        if st.button("Save Settings"):
+            try:
+                new_secrets = {
+                    'LINKEDIN_EMAIL': linkedin_email,
+                    'LINKEDIN_PASSWORD': linkedin_password
+                }
+                save_secrets(new_secrets)
+                st.success("Settings saved successfully!")
+            except Exception as e:
+                st.error(f"Failed to save settings: {str(e)}")
+
+    with tab4:
+        if st.session_state.cover_letter is not None:
+            editor = CoverLetterEditor()
+            edited_text = editor.create_editing_interface(st.session_state.cover_letter['text'])
+            
+            if edited_text != st.session_state.cover_letter['text']:
+                st.session_state.cover_letter['text'] = edited_text
+                st.markdown('<div class="success-message">✨ Cover letter updated successfully!</div>', unsafe_allow_html=True)
+                
+            st.markdown("""<div class="cover-letter-container">
+                        <p>{}</p>
+                        </div>""".format(edited_text), unsafe_allow_html=True)
+            
+            # Add download button with centered styling
+            st.markdown('<div class="download-button">', unsafe_allow_html=True)
+            st.download_button(
+                label="📥 Download Cover Letter",
+                data=edited_text,
+                file_name="cover_letter.txt",
+                mime="text/plain"
+            )
+            st.markdown('</div>', unsafe_allow_html=True)
+        else:
+            st.info("Generate a cover letter first to use the editor.")
+
     # Generate button
     if st.button('Generate Cover Letter', type='primary'):
         with st.spinner("Generating your cover letter..."):
@@ -200,6 +278,10 @@ def main():
                 # Generate cover letter
                 job_posting = scrape_job_posting(job_url)
                 response = query(user, job_posting, 'src/prompts/cover_letter.txt')
+                
+                # Store the generated cover letter in session state
+                st.session_state.cover_letter = response
+                st.session_state.editor_active = True
 
                 # Display result in a nice format
                 st.markdown('<div class="success-message">✨ Cover letter generated successfully!</div>', unsafe_allow_html=True)
@@ -208,15 +290,13 @@ def main():
                             </div>""".format(response['text']), unsafe_allow_html=True)
                 
                 # Add download button with centered styling
-                st.markdown('<div class="download-button">', unsafe_allow_html=True)
                 st.download_button(
                     label="📥 Download Cover Letter",
                     data=response['text'],
                     file_name="cover_letter.txt",
                     mime="text/plain"
                 )
-                st.markdown('</div>', unsafe_allow_html=True)
-                
+                st.rerun()
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
                 if "credentials not found" in str(e):
