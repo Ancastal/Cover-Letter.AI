@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.2.1] - 2024-01-03
+### Fixed
+- Added missing app.py and cover_letter_editor.py files to the release
+
 ## [1.2.0] - 2024-01-03
 ### Added
 - New cover letter editor interface with customization options
