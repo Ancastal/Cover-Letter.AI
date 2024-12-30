@@ -1,0 +1,5 @@
+ALWAYS update the Changelog.md under [Unreleased] when making changes and update the version number in VERSION when releasing a new version.
+When Asked to Commit Staged Changes always check changelog to see if the changes in stagedfiles are represented in the changelog before commiting.
+When releasing: Review [Unreleased] changes to determine version bump (features→minor, fixes→patch, breaking→major), move changes to new version section with date, update the version number in VERSION, commit as "release: Version X.Y.Z", and create git tag.
+
+Everytime you update the changelog, check the changelog-instructions.md file to see if you need to update the changelog in any other way.

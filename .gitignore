@@ -18,3 +18,6 @@ data
 *.zip
 *.csv
 test.*
+changelog-instructions.md
+.streamlit
+secrets.toml

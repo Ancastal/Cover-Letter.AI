@@ -1,72 +1,102 @@
-
 # Cover Letter Generator
 
-The Cover Letter Generator is a web application that helps you generate cover letters for job applications. It uses web scraping to extract job posting details from a provided URL and combines them with user inputs to generate personalized cover letters using language models.
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](VERSION)
 
-**Note:**
-The application has an additional feature to scrape the user profile URL and gather user information automatically. However, this feature is only available when running the application locally and is not available in the Cloud implementation provided as a demo.
+The Cover Letter Generator is an AI-powered web application that helps you create professional, personalized cover letters for job applications. It leverages web scraping technology to extract job posting details automatically and combines them with your professional background to generate tailored cover letters using advanced language models.
 
-**Demo:**
-- https://coverletter-generation.streamlit.app/
+**Live Demo:** [Cover Letter Generator](https://coverletter-generation.streamlit.app/)
 
-## Features
+## ✨ Features
 
-- Scrape job posting details from a URL, including job title, company name, location, job description, and salary information.
-- Collect user inputs for name, education, experience, skills, and certifications.
-- Generate cover letters based on the scraped job posting details and user inputs.
-- Utilizes language models and conversation chains to provide personalized responses.
+- **Automated Job Data Extraction**: Scrapes job posting details from URLs, including:
+  - Job title
+  - Company name
+  - Location
+  - Job description
+  - Salary information (when available)
+- **Personalized Content Generation**: 
+  - Input your professional background
+  - Customize with education, experience, skills, and certifications
+  - Generate tailored cover letters matching job requirements
+- **Flexible Customization**:
+  - Upload custom prompt templates
+  - Fine-tune the generation process
+  - Multiple output options
 
-## Installation
+**Note:** The profile URL scraping feature is available only in local deployments and is not included in the cloud demo for security reasons.
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Python 3.8 or higher
+- OpenAI API key
+
+### Installation
 
 1. Clone the repository:
-
-```shell
-git clone https://github.com/your-username/job-application-generator.git
+```bash
+git clone https://github.com/ancastal/Cover-Letter.AI.git
 ```
 
-2. Change into the project directory:
-
-```shell
-cd job-application-generator
+2. Navigate to the project directory:
+```bash
+cd Cover-Letter.AI
 ```
 
-3. Install the required dependencies:
-
-```shell
+3. Install dependencies:
+```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+### Configuration
 
-1. Run the Streamlit app:
+1. Set up your OpenAI API key:
+   - Create a `.streamlit/secrets.toml` file
+   - Add your API key:
+     ```toml
+     OPENAI_API_KEY = "your-api-key-here"
+     ```
+   - Or set it as an environment variable:
+     ```bash
+     export OPENAI_API_KEY="your-api-key-here"
+     ```
 
-```shell
+### Usage
+
+1. Start the application:
+```bash
 streamlit run app.py
 ```
 
-2. Access the application in your web browser by opening the provided local URL.
+2. Open your browser and navigate to the provided local URL
 
-3. Enter the URL of the job posting and click "Scrape Job Posting" to retrieve the job details.
+3. Using the application:
+   - Enter a job posting URL
+   - Click "Scrape Job Posting" to extract details
+   - Fill in your professional information
+   - (Optional) Upload a custom prompt template
+   - Click "Generate Cover Letter"
+   - Review and download your personalized cover letter
 
-4. Fill in the user persona fields with your information, including name, education, experience, skills, and certifications.
+## 🤝 Contributing
 
-5. Optionally, upload a prompt template file for generating personalized cover letters.
+We welcome contributions! Here's how you can help:
 
-6. Click "Generate Cover Letter" to generate a cover letter based on the scraped job posting details and user inputs.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-7. The generated cover letter will be displayed on the web page.
+Please check our [Contributing Guidelines](CONTRIBUTING.md) for more details.
 
-## Configuration
+## 📝 License
 
-- Make sure to set the `OPENAI_API_KEY` environment variable with your OpenAI API key.
-```
-export OPENAI_API_KEY="YOUR_API_KEY"
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Contributing
+## 🙏 Acknowledgments
 
-Contributions are welcome! If you encounter any issues or have suggestions for improvements, please feel free to open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+- Built with [Streamlit](https://streamlit.io/)
+- Powered by OpenAI's language models
+- Special thanks to all contributors

@@ -1,6 +1,8 @@
 ## [Unreleased]
+### Changed
+- Enhanced README.md with version shield, improved documentation, and better formatting
 
-## [1.1.0] - 2023-12-19
+## [1.1.0] - 2024-12-30
 ### Added
 - Download button for generated cover letters
 - Helpful tooltips and placeholders for input fields
